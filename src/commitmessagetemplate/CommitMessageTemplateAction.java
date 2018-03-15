@@ -23,50 +23,65 @@
 
 package commitmessagetemplate;
 
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.project.DumbAware;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vcs.CommitMessageI;
 import com.intellij.openapi.vcs.VcsDataKeys;
 import com.intellij.openapi.vcs.ui.Refreshable;
 import org.jetbrains.annotations.Nullable;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * @author darekkay
  */
 public class CommitMessageTemplateAction extends AnAction implements DumbAware {
 
-    public void actionPerformed(AnActionEvent e) {
+    @Override
+    public void actionPerformed(AnActionEvent e)
+    {
         final CommitMessageI checkinPanel = getCheckinPanel(e);
-        if (checkinPanel == null) {
+        if (checkinPanel == null)
+        {
             return;
         }
 
         Project project = e.getRequiredData(CommonDataKeys.PROJECT);
-        CommitMessageTemplateConfig config = CommitMessageTemplateConfig.getInstance(project);
+        CommitMessageTemplateConfig config =
+                CommitMessageTemplateConfig.getInstance(project);
 
-        if (config != null) {
+        if (config != null)
+        {
             String commitMessage = config.getCommitMessage();
-            if (!commitMessage.isEmpty()) {
+            if (!commitMessage.isEmpty())
+            {
+                commitMessage.replace("${date}", new SimpleDateFormat(
+                        "yyyy-MM-DD HH:mm:ss").format(new Date()));
                 checkinPanel.setCommitMessage(commitMessage);
             }
         }
     }
 
-
     @Nullable
-    private static CommitMessageI getCheckinPanel(@Nullable AnActionEvent e) {
-        if (e == null) {
+    private static CommitMessageI getCheckinPanel(@Nullable AnActionEvent e)
+    {
+        if (e == null)
+        {
             return null;
         }
         Refreshable data = Refreshable.PANEL_KEY.getData(e.getDataContext());
-        if (data instanceof CommitMessageI) {
+        if (data instanceof CommitMessageI)
+        {
             return (CommitMessageI) data;
         }
-        CommitMessageI commitMessageI = VcsDataKeys.COMMIT_MESSAGE_CONTROL.getData(e.getDataContext());
-        if (commitMessageI != null) {
+        CommitMessageI commitMessageI =
+                VcsDataKeys.COMMIT_MESSAGE_CONTROL.getData(e.getDataContext());
+        if (commitMessageI != null)
+        {
             return commitMessageI;
         }
         return null;
