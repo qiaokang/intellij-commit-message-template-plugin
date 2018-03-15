@@ -59,7 +59,8 @@ public class CommitMessageTemplateAction extends AnAction implements DumbAware {
             String commitMessage = config.getCommitMessage();
             if (!commitMessage.isEmpty())
             {
-                commitMessage.replace("${date}", new SimpleDateFormat(
+                commitMessage = commitMessage.replace("${date}", new
+                    SimpleDateFormat(
                         "yyyy-MM-DD HH:mm:ss").format(new Date()));
                 checkinPanel.setCommitMessage(commitMessage);
             }
